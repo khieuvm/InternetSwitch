@@ -1,2 +1,6 @@
-# InternetSwitch
-Switch Internet Settings Between Ethernet and Wifi
+#### **Internet Switch**
+
+### How to use
+* 	Run this application...
+
+## Enjoy!
