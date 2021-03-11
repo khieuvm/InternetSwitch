@@ -4,9 +4,9 @@
 #AutoIt3Wrapper_Icon=icon.ico
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Res_Description=InternetSwitch
-#AutoIt3Wrapper_Res_Fileversion=1.0.1.1
-#AutoIt3Wrapper_Res_Fileversion_AutoIncrement=y
+#AutoIt3Wrapper_Res_Fileversion=1.0.1.2
 #AutoIt3Wrapper_Res_ProductName=Khieudeptrai
+#AutoIt3Wrapper_Res_ProductVersion=1.0.1.2
 #AutoIt3Wrapper_Res_LegalCopyright=Copyright © Khieudeptrai
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
@@ -19,11 +19,18 @@ _Singleton(@ScriptName)
 Opt("TrayMenuMode", 3)
 Opt("TrayOnEventMode", 1) ; Enable TrayOnEventMode.
 
+Global Const $IniFile = "Config.ini"
+Global $Ethernet_Name
+Global $Ethernet_Name_Default = "Ethernet"
+Global $Wifi_Name
+Global $Wifi_Name_Default = "Wi-Fi"
+
 ; Write a key run.
 Local $sfilePath
 $sfilePath = @ScriptDir & "\" & @ScriptName
 RegWrite("HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run", "InternetSwitch", "REG_SZ", $sfilePath)
 
+ReadIniFile()
 Main()
 
 Func Main()
@@ -52,21 +59,26 @@ Func Main()
 	WEnd
 EndFunc
 
+Func ReadIniFile()
+   $Ethernet_Name = IniRead($IniFile, "Config", "Enthernet_Name", $Ethernet_Name_Default)
+   $Wifi_Name = IniRead($IniFile, "Config", "Wifi_Name", $Wifi_Name_Default)
+EndFunc
+
 Func EnableEthernet()
-    RunWait('netsh interface set interface "Ethernet" enable',"",@SW_Hide)
-	RunWait('netsh interface set interface "Wi-Fi 2" disable',"",@SW_Hide)
+    RunWait('netsh interface set interface "' & $Ethernet_Name & '" enable',"",@SW_Hide)
+	RunWait('netsh interface set interface "' & $Wifi_Name & '" disable',"",@SW_Hide)
 	RegWrite("HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable", "REG_DWORD","0x000001")
 EndFunc
 
 Func EnableWifi()
-    RunWait('netsh interface set interface "Ethernet" disable',"",@SW_Hide)
-	RunWait('netsh interface set interface "Wi-Fi 2" enable',"",@SW_Hide)
+    RunWait('netsh interface set interface "' & $Ethernet_Name & '" disable',"",@SW_Hide)
+	RunWait('netsh interface set interface "' & $Wifi_Name & '" enable',"",@SW_Hide)
 	RegWrite("HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable", "REG_DWORD","0x000000")
 EndFunc
 
 Func EnableAll()
-    RunWait('netsh interface set interface "Ethernet" enable',"",@SW_Hide)
-	RunWait('netsh interface set interface "Wi-Fi 2" enable',"",@SW_Hide)
+    RunWait('netsh interface set interface "' & $Ethernet_Name & '" enable',"",@SW_Hide)
+	RunWait('netsh interface set interface "' & $Wifi_Name & '" enable',"",@SW_Hide)
 	RegWrite("HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable", "REG_DWORD","0x000001")
 EndFunc
 
