@@ -90,7 +90,7 @@ Func CheckStatus()
 	Wend
 	$sttEthernet = Run(@ComSpec & ' /c netsh interface show interface "' & $Ethernet_Name & '" | findstr Enable',"",@SW_Hide, $STDOUT_CHILD)
 	While 1
-		$line = StdoutRead($sttWifi)
+		$line = StdoutRead($sttEthernet)
 		If @error Then ExitLoop
 		If $line Then TrayItemSetState($idCheckEthernet, $TRAY_CHECKED)
 	Wend
